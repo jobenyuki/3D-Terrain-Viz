@@ -1,5 +1,7 @@
 import React from 'react'
+// Import custom components
+import Main from './components/Main'
 
-const App = () => <h1>Running?</h1>
+const App = () => <Main />
 
 export default App

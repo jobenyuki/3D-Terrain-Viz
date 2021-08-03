@@ -1,0 +1,13 @@
+.textInputContainer {
+  position: relative;
+  height: auto;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.textInput {
+  height: 30px;
+  outline: none;
+}

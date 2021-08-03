@@ -1,0 +1,7 @@
+.radioInputContainer {
+  position: relative;
+}
+
+.radioInput {
+  cursor: pointer;
+}
