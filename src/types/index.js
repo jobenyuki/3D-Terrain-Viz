@@ -12,3 +12,9 @@ export const INPUT_NAMES = Object.freeze({
   ZOOM: 'zoom',
   MAPPING: 'mapping',
 })
+
+export const MAPPING_TYPES = Object.freeze({
+  GRADIENT: 0,
+  TEXTURE: 1,
+  BOTH: 2,
+})

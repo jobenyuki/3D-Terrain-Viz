@@ -2,6 +2,8 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 // Import utils
 import { loadTerrainTextures, loadFile } from 'Utils/renderUtils'
+// Import types
+import { MAPPING_TYPES } from 'Types'
 // Import constants
 import {
   TERRAIN_VERTEX_SHADER_PATH,
@@ -19,6 +21,7 @@ class TerrainRenderer {
     this.disposed = false // Flag for disposal. If true stop rendering and dispose gpu consumers
 
     this.terrainBumpTexture = null // Bump texture
+    this.terrainDiffuseTexture = null // Diffuse texture
     this.terrainSize = 256 // Terrain size. (Same as the size of mapbox tile)
     this.terrainSegment = 128 // Terrain segment.
 
@@ -130,6 +133,9 @@ class TerrainRenderer {
     this.uniforms = {
       bumpTexture: { type: 't', value: this.terrainBumpTexture },
       bumpScale: { type: 'f', value: 50.0 },
+      diffuseTexture: { tyep: 't', value: this.terrainDiffuseTexture },
+      gradientMapping: { type: 'b', value: true },
+      textureMapping: { type: 'b', value: true },
     }
     const terrainMat = new THREE.ShaderMaterial({
       uniforms: this.uniforms,
@@ -154,14 +160,32 @@ class TerrainRenderer {
 
     // If settings coord and zoom have been changed, refetch textures
     if (this.settings?.lat !== lat || this.settings?.lon !== lon || this.settings?.zoom !== zoom) {
-      const terrainBumpTexture = await loadTerrainTextures(lat, lon, zoom)
+      const [terrainBumpTexture, terrainDiffuseTexture] = await Promise.all(
+        loadTerrainTextures(lat, lon, zoom)
+      )
 
       // First, dispose existing terrain textures
       this.disposeTextures()
 
       this.terrainBumpTexture = terrainBumpTexture
+      this.terrainDiffuseTexture = terrainDiffuseTexture
 
       this.uniforms.bumpTexture.value = this.terrainBumpTexture
+      this.uniforms.diffuseTexture.value = this.terrainDiffuseTexture
+    }
+
+    // If settings mapping has been changed, update mapping style
+    if (this.settings?.mapping !== mapping) {
+      if (mapping === MAPPING_TYPES.GRADIENT) {
+        this.uniforms.gradientMapping.value = true
+        this.uniforms.textureMapping.value = false
+      } else if (mapping === MAPPING_TYPES.TEXTURE) {
+        this.uniforms.gradientMapping.value = false
+        this.uniforms.textureMapping.value = true
+      } else {
+        this.uniforms.gradientMapping.value = true
+        this.uniforms.textureMapping.value = true
+      }
     }
 
     this.settings = settings
@@ -209,6 +233,7 @@ class TerrainRenderer {
    */
   disposeTextures = () => {
     this.terrainBumpTexture?.dispose()
+    this.terrainDiffuseTexture?.dispose()
   }
 }
 

@@ -16,8 +16,9 @@ export const loadTerrainTextures = (
 ) => {
   const tiles = pointToTile(lon, lat, zoom)
   const terrainTileSrc = `${MAPBOX_TERRAIN_API_HOST}/${zoom}/${tiles[0]}/${tiles[1]}.pngraw?access_token=${MAPBOX_TOKEN}`
+  const satelliteTileSrc = `${MAPBOX_SATELLITE_API_HOST}/${zoom}/${tiles[0]}/${tiles[1]}.jpg90?access_token=${MAPBOX_TOKEN}`
 
-  return loadTexture(terrainTileSrc)
+  return [loadTexture(terrainTileSrc), loadTexture(satelliteTileSrc)]
 }
 
 // Load texture
