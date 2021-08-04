@@ -10,8 +10,9 @@ http://3d-terrain-visualization.surge.sh/
 
 # How to install
 
-Run locally: `yarn` && `yarn dev`
-Build, `yarn build`
+Clone: `git clone https://github.com/jobenyuki/3D-Terrain-Viz.git`<br />
+Run locally: `yarn` && `yarn dev`<br />
+Build: `yarn build`
 
 # Technologies/Libraries
 
